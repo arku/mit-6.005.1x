@@ -1,6 +1,7 @@
 package warmup;
 
 import java.util.Set;
+import java.util.HashSet;
 
 public class Quadratic {
 
@@ -12,7 +13,36 @@ public class Quadratic {
      * @return all integers x such that ax^2 + bx + c = 0.
      */
     public static Set<Integer> roots(int a, int b, int c) {
-        throw new RuntimeException("not implemented yet;"); // TODO: delete this line when you implement it
+
+        assert(!((a == 0) && (b == 0) && (c == 0)));
+
+        Set<Integer> roots = new HashSet<Integer>();
+        double discriminant = Math.pow(b, 2) - (4.0 * a * c);
+        System.out.println(discriminant);
+        double sqrt = Math.sqrt(discriminant);
+
+        // Check to see if the roots are imaginary
+        if (! Double.isNaN(sqrt) && isWholeNumber(sqrt)) {
+            int discriminantSquareRoot  = (int) sqrt;
+            double firstRoot = (-b + discriminantSquareRoot) / (2.0 * a);
+            double secondRoot = (-b - discriminantSquareRoot) / (2.0 * a);
+
+            if (a == 0) {
+                if(b != 0 && isWholeNumber((double)-c/b))
+                    roots.add(-c/b);
+            }
+            else if (isWholeNumber(firstRoot)) {
+                roots.add((int)firstRoot);
+                roots.add((int)secondRoot);
+            }
+            else if (c == 0 && isWholeNumber(Math.sqrt(-b/a)))
+                roots.add((int)Math.sqrt(-b/a));
+        }
+        return roots;
+    }
+
+    private static boolean isWholeNumber(double number) {
+        return number == (int) number;
     }
 
     
