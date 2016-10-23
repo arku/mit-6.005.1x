@@ -1,0 +1,5 @@
+**/.grader/
+**/my-grader-report.xml
+**/*.zip
+**/*-final-grader.jar
+
