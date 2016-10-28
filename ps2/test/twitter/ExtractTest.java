@@ -31,6 +31,10 @@ public class ExtractTest {
      * 3. More than a mention
      * 4. Invalid mention ie. a mention preceded or followed by one of the following
      *    characters A-Z, a-z, 0-9, _, -
+     * Paritioning based on the position
+     * 1. At the beginning of the tweet
+     * 2. At the middle
+     * 3. At the end
      * Partitioning based on case
      * 1. lowercase mention
      * 2. uppercase mention
@@ -113,13 +117,30 @@ public class ExtractTest {
     
     @Test
     public void testGetMentionedUsersMoreThanMention() {
-        Tweet moreThanMentionTweet = new Tweet(3, "Joseph", "@JOhn It was a great event hosted by @john, thanks to @rick for organizing", Instant.now());
+        Tweet moreThanMentionTweet = new Tweet(3, "Joseph", "@JOhn It was a great event hosted by @joseph, thanks to @rick for organizing", Instant.now());
+       
         
         Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(moreThanMentionTweet));
         Set<String> expectedMentions = new HashSet<String>();
+        expectedMentions.add("joseph");
         expectedMentions.add("john");
         expectedMentions.add("rick");
         assertEquals(expectedMentions,actualMentions);
+    }
+    
+    @Test
+    public void testGetMentionedUsersMentionsAtEnd() {
+        Tweet tweetWithMentionsAtEnd = new Tweet(3, "Jon", "@Bran @Rick It was a great event hosted by @robb, thanks to @EddarD", Instant.now());
+       
+        
+        Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(tweetWithMentionsAtEnd));
+        Set<String> expectedMentions = new HashSet<String>();
+        
+        expectedMentions.add("bran");
+        expectedMentions.add("rick");
+        expectedMentions.add("robb");
+        expectedMentions.add("eddard");
+        assertEquals(expectedMentions, actualMentions);
     }
     
     @Test
