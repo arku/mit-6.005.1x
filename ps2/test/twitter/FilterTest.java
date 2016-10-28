@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,8 +12,21 @@ import org.junit.Test;
 public class FilterTest {
 
     /*
-     * TODO: your testing strategies for these methods should go here.
-     * Make sure you have partitions.
+     * TODO: Testing strategy:
+     * writtenBy:
+     * Partitioning based on quantity of tweets:
+     *  1. No Tweets
+     *  2. Exactly one tweet
+     *  3. More than one tweet
+     * Partitioning based on tweets written by username:
+     *  1. No tweets written by the given username
+     *  2. Single tweet written by the given username
+     *  3. More than one tweet written by the given username
+     *  Partitioning based on case:
+     *  1. Uppercase username
+     *  2. Lowercase username
+     *  3. Togglecase username
+     *  Partitioning based on the order of the tweets fed in as input
      */
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
@@ -32,6 +46,57 @@ public class FilterTest {
         
         assertEquals("expected singleton list", 1, writtenBy.size());
         assertTrue("expected list to contain tweet", writtenBy.contains(tweet1));
+    }
+    
+    @Test
+    public void testWrittenByNoTweets() {
+        List<Tweet> writtenBy = Filter.writtenBy(Collections.EMPTY_LIST, "lita");
+        
+        assertEquals("expected empty list", 0, writtenBy.size());
+    }
+    
+    @Test
+    public void testWrittenBySingleTweetNoResult() {
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1), "lita");
+        
+        assertEquals("expected empty list", 0, writtenBy.size());
+    }
+    
+    @Test
+    public void testWrittenByMoreThanOneTweetSingleResult() {
+        Tweet tweetByLita = new Tweet(3456, "lita", "Nothing in here", d1);
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2, tweetByLita), "lita");
+        
+        assertEquals("expected to be a singleton list", 1, writtenBy.size());
+        assertTrue("expected list to contain lita's tweet", writtenBy.contains(tweetByLita));
+    }
+    
+    @Test
+    public void testWrittenByMoreThanOneTweetMultipleResults() {
+        Tweet tweet3 = new Tweet(3456, "lita", "Nothing in here", d1);
+        Tweet tweet4 = new Tweet(567, "lita", "I am so fancy", d2);
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2, tweet4, tweet3), "lita");
+        
+        assertEquals("expected to be a 2 element list", 2, writtenBy.size());
+        assertTrue("expected list to contain lita's tweet", writtenBy.contains(tweet3));
+        assertTrue("expected list to contain lita's tweet", writtenBy.contains(tweet4));
+        assertEquals("expected tweet4 to appear before tweet3", writtenBy.get(0), tweet4);
+        assertEquals("expected tweet3 to appear after tweet4", writtenBy.get(1), tweet3);
+        
+    }
+    
+    @Test
+    public void testWrittenByMoreThanOneTweetMultipleResultsDifferentCase() {
+        Tweet tweet3 = new Tweet(3456, "lita", "Nothing in here", d1);
+        Tweet tweet4 = new Tweet(567, "LITA", "I am so fancy", d2);
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet4, tweet3, tweet1, tweet2), "liTA");
+        
+        assertEquals("expected to be a 2 element list", 2, writtenBy.size());
+        assertTrue("expected list to contain lita's tweet", writtenBy.contains(tweet3));
+        assertTrue("expected list to contain lita's tweet", writtenBy.contains(tweet4));
+        assertEquals("expected tweet4 to appear before tweet3", writtenBy.get(0), tweet4);
+        assertEquals("expected tweet3 to appear after tweet4", writtenBy.get(1), tweet3);
+        
     }
     
     @Test
