@@ -1,5 +1,6 @@
 package twitter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,15 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> tweetsWrittenByUsername = new ArrayList<>();
+        username = username.toLowerCase();
+
+        for (Tweet tweet: tweets) {
+            String tweetAuthor = tweet.getAuthor().toLowerCase();
+            if (tweetAuthor.equals(username))
+                tweetsWrittenByUsername.add(tweet);
+        }
+        return tweetsWrittenByUsername;
     }
 
     /**
