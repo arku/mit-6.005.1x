@@ -57,15 +57,25 @@ public class Extract {
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
         Set<String> mentions = new HashSet<>();
+        Set<String> mentionsInATweet;
 
-        Pattern mentionPattern = Pattern.compile("\\s+@([A-Za-z0-9-_]+)");
-        Matcher matcher;
         for (Tweet tweet: tweets) {
-            matcher = mentionPattern.matcher(" " + tweet.getText().toLowerCase());
-            while (matcher.find()) {
-                mentions.add(matcher.group(1));
-            }
+            mentionsInATweet = getMentionedUsersInTweet(tweet.getText());
+            for (String mention: mentionsInATweet)
+                mentions.add(mention);
         }
+        return mentions;
+    }
+
+    public static Set<String> getMentionedUsersInTweet(String tweetText) {
+        Set<String> mentions = new HashSet<>();
+
+        Pattern mentionPattern = Pattern.compile("\\s+@([a-z0-9-_]+)");
+        Matcher matcher;
+        matcher = mentionPattern.matcher(" " + tweetText.toLowerCase());
+        while (matcher.find())
+            mentions.add(matcher.group(1));
+
         return mentions;
     }
 

@@ -2,6 +2,9 @@ package twitter;
 
 import java.util.List;
 import java.util.Map;
+import java.awt.geom.GeneralPath;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,7 +41,21 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Map<String, Set<String>> graph = new HashMap<String, Set<String>>();
+        Set<String> mentionsInTweet, followers;
+        String author;
+
+        for(Tweet tweet: tweets) {
+            mentionsInTweet = Extract.getMentionedUsersInTweet(tweet.getText());
+            author = tweet.getAuthor().toLowerCase();
+
+            for(String followee: mentionsInTweet) {
+                followers = (!graph.containsKey(followee)) ? new HashSet<>() : graph.get(followee);
+                followers.add(author);
+                graph.put(followee, followers);
+            }
+        }
+        return graph;
     }
 
     /**
