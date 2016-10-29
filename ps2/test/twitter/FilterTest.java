@@ -39,6 +39,22 @@ public class FilterTest {
      *  2. Single tweet written in the given timespan
      *  3. More than one tweet written in the given timespan
      *  Partitioning based on the order of the tweets fed in as input
+     *  
+     *  containing:
+     *  
+     *  Paritioning based on tweets
+     *  1. No Tweets
+     *  2. Exactly one tweet
+     *  3. More than one tweet
+     *  Partitioning based on words list
+     *  1. No words appear in the given tweets
+     *  2. One word appears in the given tweets
+     *  3. More than one word appears in the given tweets
+     *  Partitioning based on case
+     *  1. Lowercase
+     *  2. Uppercase
+     *  3. ToggleCase
+     *  Partitioning based on more than one space in tweets
      */
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
@@ -168,12 +184,64 @@ public class FilterTest {
     }
     
     @Test
-    public void testContaining() {
-        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk"));
+    public void testContainingNoTweetsNoResult() {
+        List<Tweet> containing = Filter.containing(Collections.EMPTY_LIST, Arrays.asList("talk"));
+        
+        assertEquals("expected empty list", 0, containing.size());
+    }
+    
+    public void testContainingSingleTweetNoWordsNoResult() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1),Collections.EMPTY_LIST);
+        
+        assertEquals("expected empty list", 0, containing.size());
+    }
+    
+    public void testContainingSingleTweetMultipleWordsNoResult() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1),Arrays.asList("sleep", "love"));
+        
+        assertEquals("expected empty list", 0, containing.size());
+    }
+    
+    @Test
+    public void testContainingMultipleTweetsSingleResult() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2),Arrays.asList("It"));
+        
+        assertEquals("expected singleton list", 1, containing.size());
+        assertTrue("expected list to contain tweet", containing.contains(tweet1));
+    }
+    
+    @Test
+    public void testContainingMultipleTweetsMultipleResults() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk", "RIVEST"));
         
         assertFalse("expected non-empty list", containing.isEmpty());
         assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet1, tweet2)));
         assertEquals("expected same order", 0, containing.indexOf(tweet1));
+    }
+    
+    @Test
+    public void testContainingTweetsWithMoreThanOneSpace() {
+        Tweet tweet3 = new Tweet(781, "george", "nothing    in here", d1);
+        Tweet tweet4 = new Tweet(893, "chad", "I am so     fancy", d2);
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet3, tweet4), Arrays.asList("in", "nothing", "fancy"));
+        
+        assertFalse("expected a non-empty list", containing.isEmpty());
+        assertEquals("expected a 2 element list", 2, containing.size());
+        assertEquals("tweet3 should appear before tweet4", 0, containing.indexOf(tweet3));
+        
+    }
+    
+    @Test
+    public void testContainingMultipleTweetsMultipleResultsDifferentCase() {
+        Tweet tweet3 = new Tweet(3456, "lita", "NOTHING in here", d1);
+        Tweet tweet4 = new Tweet(567, "kapur", "I am so FANcY", d2);
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet4, tweet3, tweet1, tweet2), Arrays.asList("iN", "nothing", "fancy"));
+        
+        assertEquals("expected to be a 3 element list", 3, containing.size());
+        assertEquals("expected tweet4 to appear before tweet3", containing.get(0), tweet4);
+        assertEquals("expected tweet3 to appear before tweet2", containing.get(1), tweet3);
+        assertEquals("expected tweet2 to appear after tweet4 and tweet3", containing.get(2), tweet2);
+        
     }
 
     /*
