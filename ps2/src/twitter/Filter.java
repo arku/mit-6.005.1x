@@ -2,6 +2,7 @@ package twitter;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,7 +76,21 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> containing = new ArrayList<>();
+        // Convert the words to lowercase
+        for(int i = 0; i < words.size(); i++)
+            words.set(i, words.get(i).toLowerCase());
+
+        for (Tweet tweet: tweets) {
+            List<String> wordsInTweet = Arrays.asList(tweet.getText().toLowerCase().split("\\s+"));
+            for (String word: words) {
+                if (wordsInTweet.contains(word)) {
+                    containing.add(tweet);
+                    break;
+                }
+            }
+        }
+        return containing;
     }
 
     /* Copyright (c) 2007-2016 MIT 6.005 course staff, all rights reserved.
