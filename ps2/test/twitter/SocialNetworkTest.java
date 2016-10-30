@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,12 @@ public class SocialNetworkTest {
      *  1. Uppercase
      *  2. Lowercase
      *  3. ToggleCase
+     *  
+     *  influencers:
+     *  Partition based on quantity of followees
+     *  1. Empty graph
+     *  2. One member graph
+     *  3. More than one member graph
      *
      */
     
@@ -35,6 +42,7 @@ public class SocialNetworkTest {
     private static final Tweet tweet1 = new Tweet(1, "kumar", "I don't mention anyone", d1);
     private static final Tweet tweet2 = new Tweet(2, "Rob", "Thanks to @keVin @john @joseph", d1);
     private static final Tweet tweet3 = new Tweet(3, "LisA", "Thanks to @kevin @JOHN @kumar @rob @joseph", d1);
+    
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -93,6 +101,39 @@ public class SocialNetworkTest {
         List<String> influencers = SocialNetwork.influencers(followsGraph);
         
         assertTrue("expected empty list", influencers.isEmpty());
+    }
+    
+    @Test
+    public void testInfluencersSingleEntry() {
+        Map<String, Set<String>> graph = new HashMap<>();
+        graph.put("mark", new HashSet<>(Arrays.asList("ralph", "johnson")));
+        List<String> influencers = SocialNetwork.influencers(graph);
+        
+        assertEquals("expected a singleton list", 1, influencers.size());
+        assertEquals("expected mark to be the influencer","mark", influencers.get(0));
+    }
+    
+    @Test
+    public void testInfluencersMoreThanOneEqualFollowers() {
+        Map<String, Set<String>> graph = new HashMap<>();
+        graph.put("mark", new HashSet<>(Arrays.asList("ralph", "johnson")));
+        graph.put("roy", new HashSet<>(Arrays.asList("chad", "john")));
+        
+        List<String> influencers = SocialNetwork.influencers(graph);
+        assertEquals("expected two element list", 2, influencers.size());
+    }
+    
+    @Test
+    public void testInfluencersMoreThanOneNonEqualFollowers() {
+        Map<String, Set<String>> graph = new HashMap<>();
+        graph.put("mark", new HashSet<>(Arrays.asList("ralph", "johnson")));
+        graph.put("patrick", new HashSet<>(Arrays.asList("rob", "pamela", "jason")));
+        graph.put("roy", new HashSet<>(Arrays.asList("chad", "john")));
+        
+        List<String> influencers = SocialNetwork.influencers(graph);
+        
+        assertEquals("expected three element list", 3, influencers.size());
+        assertEquals("expected patrick to be the influencer", "patrick", influencers.get(0));
     }
 
     /*
