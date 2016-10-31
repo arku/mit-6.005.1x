@@ -42,6 +42,8 @@ public class SocialNetworkTest {
     private static final Tweet tweet1 = new Tweet(1, "kumar", "I don't mention anyone", d1);
     private static final Tweet tweet2 = new Tweet(2, "Rob", "Thanks to @keVin @john @joseph", d1);
     private static final Tweet tweet3 = new Tweet(3, "LisA", "Thanks to @kevin @JOHN @kumar @rob @joseph", d1);
+    private static final Tweet tweet4 = new Tweet(4, "roB", "Hi @chad", d1);
+    private static final Tweet tweet5 = new Tweet(5, "kumar", "@kumar is great", d1);
     
     
     @Test(expected=AssertionError.class)
@@ -53,14 +55,16 @@ public class SocialNetworkTest {
     public void testGuessFollowsGraphNoTweetsEmptyGraph() {
         Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(new ArrayList<>());
         
-        assertTrue("expected empty graph", followsGraph.isEmpty());
+        assertTrue("expected empty graph when no tweets are present", followsGraph.isEmpty());
     }
     
     @Test
-    public void testGuessFollowsGraphSingleTweetEmptyGraph() {
+    public void testGuessFollowsGraphSingleTweetNoFollowingNonEmptyGraph() {
         Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1));
         
-        assertTrue("expected empty graph", followsGraph.isEmpty());
+        assertFalse("expected non-empty graph", followsGraph.isEmpty());
+        assertTrue("expected a single node for kumar", followsGraph.containsKey("kumar"));
+        assertEquals("expected kumar to follow none", 0, followsGraph.get("kumar").size());
     }
     
     @Test
@@ -68,31 +72,32 @@ public class SocialNetworkTest {
         Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet2));
         
         assertFalse("expected non empty graph", followsGraph.isEmpty());
-        assertFalse("map should not contain author as key", followsGraph.containsKey("kumar"));
-        assertEquals("map should contain three keys", followsGraph.keySet().size(), 3);
-        assertEquals("the keys should have 1 value each", 1, followsGraph.get("joseph").size());
-        assertEquals("the keys should have 1 value each", 1, followsGraph.get("john").size());
-        assertEquals("the keys should have 1 value each", 1, followsGraph.get("kevin").size());
+        assertEquals("map should contain a single key", 1, followsGraph.keySet().size());
+        assertTrue("expected rob to be a node in the network", followsGraph.containsKey("rob"));
+        assertEquals("rob should follow three people", 3, followsGraph.get("rob").size());
     }
-    
-    // private static final Tweet tweet2 = new Tweet(2, "Rob", "Thanks to @keVin @john @joseph", d1);
-    // private static final Tweet tweet3 = new Tweet(3, "LisA", "Thanks to @kevin @JOHN @kumar @rob @joseph", d1);
-    
+      
     @Test
-    public void testGuessFollowsGraphSingleMultipleTweetsNonEmptyGraph() {
-        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet2, tweet3));
+    public void testGuessFollowsGraphMultipleTweetsNonEmptyGraph() {
+        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet2, tweet3, tweet4));
         
         assertFalse("expected non empty graph", followsGraph.isEmpty());
         
-        assertEquals("map should contain 5 keys", 5, followsGraph.keySet().size());
-        
-        assertFalse("author(lisa) should not be a key", followsGraph.containsKey("lisa"));
-        assertTrue("author(rob) should be a key", followsGraph.containsKey("rob"));
-        assertEquals("rob should have a follower", 1, followsGraph.get("rob").size());
+        assertEquals("map should contain 2 keys", 2, followsGraph.keySet().size());
+        assertTrue("map should contain a Rob", followsGraph.containsKey("rob"));
+        assertTrue("map should contain a Lisa", followsGraph.containsKey("lisa"));
 
-        assertFalse("map should not contain two Kevins", followsGraph.containsKey("keVin"));
-        assertTrue("map should contain a Kevin", followsGraph.containsKey("kevin"));
-        assertEquals("joseph should have two followers", 2, followsGraph.get("joseph").size());
+        assertEquals("rob should follow 4 people", 4, followsGraph.get("rob").size());
+        assertEquals("lisa should follow 5 people", 5, followsGraph.get("lisa").size());
+    }
+    
+    @Test
+    public void testGuessFollowsGraphMultipleTweetsUserFollowingHimselfNonEmptyGraph() {
+        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1, tweet5));
+        
+        assertFalse("expected non-empty graph", followsGraph.isEmpty());
+        assertEquals("has a single node", 1, followsGraph.keySet().size());
+        assertTrue("kumar cannot follow himself", followsGraph.get("kumar").isEmpty());
     }
     
     @Test

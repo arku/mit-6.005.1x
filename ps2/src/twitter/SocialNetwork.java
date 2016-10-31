@@ -48,18 +48,20 @@ public class SocialNetwork {
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
         Map<String, Set<String>> graph = new HashMap<String, Set<String>>();
-        Set<String> mentionsInTweet, followers;
+        Set<String> mentionsInTweet, followings;
         String author;
 
         for(Tweet tweet: tweets) {
             mentionsInTweet = Extract.getMentionedUsersInTweet(tweet.getText());
             author = tweet.getAuthor().toLowerCase();
 
-            for(String followee: mentionsInTweet) {
-                followers = (!graph.containsKey(followee)) ? new HashSet<>() : graph.get(followee);
-                followers.add(author);
-                graph.put(followee, followers);
+            // Find the people whom the author follows
+            followings = (!graph.containsKey(author)) ? new HashSet<>() : graph.get(author);
+            for(String following: mentionsInTweet) {
+                if (!following.equals(author))
+                    followings.add(following);
             }
+            graph.put(author, followings);
         }
         return graph;
     }
