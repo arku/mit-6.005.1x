@@ -243,6 +243,14 @@ public class FilterTest {
         assertEquals("expected tweet2 to appear after tweet4 and tweet3", containing.get(2), tweet2);
         
     }
+    
+    @Test
+    public void testContainingSubstringBug() {
+        Tweet tweet3 = new Tweet(6754, "lita", "NOTHING in here", d1);
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet3), Arrays.asList("nothin"));
+        
+        assertTrue("expected empty list", containing.isEmpty());
+    }
 
     /*
      * Warning: all the tests you write here must be runnable against any Filter

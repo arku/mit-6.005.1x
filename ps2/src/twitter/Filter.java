@@ -84,9 +84,11 @@ public class Filter {
         for (Tweet tweet: tweets) {
             List<String> wordsInTweet = Arrays.asList(tweet.getText().toLowerCase().split("\\s+"));
             for (String word: words) {
-                if (wordsInTweet.contains(word)) {
-                    containing.add(tweet);
-                    break;
+                for (String wordInTweet: wordsInTweet) {
+                    if (wordInTweet.equals(word) && !containing.contains(tweet)) {
+                        containing.add(tweet);
+                        break;
+                    }
                 }
             }
         }
