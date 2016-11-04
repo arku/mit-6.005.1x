@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.junit.Test;
 public class ExtractTest {
 
     /*
-     * TODO: Testing strategy:
+     * Testing strategy:
      * Partitioning based on Interval
      * 1. Same timestamps
      * 2. Different timestamps
@@ -55,18 +55,16 @@ public class ExtractTest {
     @Test
     public void testGetTimespanTwoTweets() {
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweet1, tweet2));
-        
+
         assertEquals("expected start", d1, timespan.getStart());
         assertEquals("expected end", d2, timespan.getEnd());
     }
     
     @Test
     public void testGetTimespanNoTweets() {
-        Instant minInstant = Instant.MIN, maxInstant = Instant.MAX;
+        // Instant minInstant = Instant.MIN, maxInstant = Instant.MAX;
         Timespan timespan = Extract.getTimespan(Arrays.asList());
-        
-        assertEquals("expected start", minInstant, timespan.getStart());
-        assertEquals("expected end", maxInstant, timespan.getEnd());
+        assertEquals(timespan.getStart(), timespan.getEnd());
     }
     
     @Test
@@ -74,9 +72,9 @@ public class ExtractTest {
         Instant latest = Instant.parse("2016-03-10T19:00:00Z"), oldest = Instant.parse("2016-01-10T03:00:00Z");
         Tweet latestTweet = new Tweet(345, "Anonymous", "Nothing fancy", latest);
         Tweet oldestTweet = new Tweet(32, "Anonymous", "Feeling crazy", oldest);
-        
+
         Timespan timespan = Extract.getTimespan(Arrays.asList( latestTweet, tweet1, tweet2, oldestTweet));
-        
+
         assertEquals("expected start", oldest, timespan.getStart());
         assertEquals("expected start", latest, timespan.getEnd());
     }
@@ -85,9 +83,9 @@ public class ExtractTest {
         Instant instantOne = Instant.parse("2016-03-10T19:00:00Z");
         Tweet tweetOne = new Tweet(90, "Anonymous", "Nothing fancy", instantOne);
         Tweet tweetTwo = new Tweet(83, "Anonymous", "Feeling crazy", instantOne);
-        
+
         Timespan timespan = Extract.getTimespan(Arrays.asList(tweetOne, tweetTwo));
-        
+
         assertEquals("expected start", instantOne, timespan.getStart());
         assertEquals("expected start", instantOne, timespan.getEnd());
     }
@@ -95,7 +93,7 @@ public class ExtractTest {
     @Test
     public void testGetMentionedUsersNoMention() {
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet1));
-        
+
         assertTrue("expected empty set", mentionedUsers.isEmpty());
     }
     
@@ -107,48 +105,91 @@ public class ExtractTest {
     
     @Test
     public void testGetMentionedUsersSingleMention() {
-        Tweet singleMentionTweet = new Tweet(3, "Joseph", "It was a great event @JOHN hosted by @john", Instant.now());
-        
+        Tweet singleMentionTweet = new Tweet(3, "Joseph", "It was a great event hosted by @john", Instant.now());
+
         Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(singleMentionTweet));
-        Set<String> expectedMentions = new HashSet<String>();
-        expectedMentions.add("john");
-        assertEquals(expectedMentions,actualMentions);
+        assertEquals("expected a set of size 1", 1, actualMentions.size());
+
+        List<String> copy = new ArrayList<>();
+        Iterator<String> iterator = actualMentions.iterator();
+        while(iterator.hasNext()) {
+            copy.add(iterator.next().toLowerCase());
+        }
+        actualMentions.clear();
+        actualMentions.addAll(copy);
+
+        assertEquals("expected a set of size 1", 1, actualMentions.size());
+        assertTrue("should contain all the valid mentions", actualMentions.containsAll(Arrays.asList("john")));
     }
     
     @Test
     public void testGetMentionedUsersMoreThanMention() {
         Tweet moreThanMentionTweet = new Tweet(3, "Joseph", "@JOhn It was a great event hosted by @joseph, thanks to @rick for organizing", Instant.now());
-       
-        
+
         Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(moreThanMentionTweet));
         Set<String> expectedMentions = new HashSet<String>();
-        expectedMentions.add("joseph");
-        expectedMentions.add("john");
-        expectedMentions.add("rick");
-        assertEquals(expectedMentions,actualMentions);
+        assertEquals("expected a set of size 3", 3, actualMentions.size());
+
+        expectedMentions.addAll(Arrays.asList("joseph", "john", "rick"));
+
+        List<String> copy = new ArrayList<>();
+        Iterator<String> iterator = actualMentions.iterator();
+        while(iterator.hasNext()) {
+            copy.add(iterator.next().toLowerCase());
+        }
+        actualMentions.clear();
+        actualMentions.addAll(copy);
+        assertEquals(expectedMentions, actualMentions);
+
     }
-    
+
     @Test
     public void testGetMentionedUsersMentionsAtEnd() {
         Tweet tweetWithMentionsAtEnd = new Tweet(3, "Jon", "@Bran @Rick It was a great event hosted by @robb, thanks to @EddarD", Instant.now());
-       
-        
+
         Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(tweetWithMentionsAtEnd));
         Set<String> expectedMentions = new HashSet<String>();
+        assertEquals("expected a set of size 4", 4, actualMentions.size());
+
+        expectedMentions.addAll(Arrays.asList("bran","rick", "eddard","robb"));
         
-        expectedMentions.add("bran");
-        expectedMentions.add("rick");
-        expectedMentions.add("robb");
-        expectedMentions.add("eddard");
+        List<String> copy = new ArrayList<>();
+        Iterator<String> iterator = actualMentions.iterator();
+        while(iterator.hasNext()) {
+            copy.add(iterator.next().toLowerCase());
+        }
+
+        actualMentions.clear();
+        actualMentions.addAll(copy);
+
         assertEquals(expectedMentions, actualMentions);
     }
-    
+
     @Test
     public void testGetMentionedUsersInvalidMention() {
-        Tweet singleMentionTweet = new Tweet(3, "Joseph", "It was a great event hosted by i@john", Instant.now());
-        
+        Tweet singleMentionTweet = new Tweet(3, "Joseph", "It was a great event hosted by a@arun!hy bitdiddle@mit.edu", Instant.now());
+
         Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(singleMentionTweet));
+        System.out.println(actualMentions);
         assertTrue("expected no mentions", actualMentions.isEmpty());
+    }
+
+    @Test
+    public void testGetMentionedUsersSingleMentionDifferentCases() {
+        Tweet singleMentionTweet = new Tweet(300, "Joseph", "It was a great event hosted by @john, thanks @JoHn, and thanks again @JOHN", Instant.now());
+
+        Set<String> actualMentions = Extract.getMentionedUsers(Arrays.asList(singleMentionTweet));
+        assertEquals("expected a set of size 1", 1, actualMentions.size());
+
+        List<String> copy = new ArrayList<>();
+        Iterator<String> iterator = actualMentions.iterator();
+        while(iterator.hasNext()) {
+            copy.add(iterator.next().toLowerCase());
+        }
+        actualMentions.clear();
+        actualMentions.addAll(copy);
+
+        assertTrue(actualMentions.containsAll(Arrays.asList("john")));
     }
 
     /*

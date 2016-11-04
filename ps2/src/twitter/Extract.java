@@ -26,7 +26,7 @@ public class Extract {
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
         if (tweets.isEmpty())
-            return new Timespan(Instant.MIN, Instant.MAX);
+            return new Timespan(Instant.MIN, Instant.MIN);
 
         Instant firstTweetInstant = tweets.get(0).getTimestamp();
         Instant start = firstTweetInstant, end = firstTweetInstant;
@@ -69,10 +69,8 @@ public class Extract {
 
     public static Set<String> getMentionedUsersInTweet(String tweetText) {
         Set<String> mentions = new HashSet<>();
-
-        Pattern mentionPattern = Pattern.compile("\\s+@([a-z0-9-_]+)");
-        Matcher matcher;
-        matcher = mentionPattern.matcher(" " + tweetText.toLowerCase());
+        Pattern mentionPattern = Pattern.compile("(?<![a-z0-9_-])@([a-z0-9_-]+)(?![a-z0-9_-])");
+        Matcher matcher = mentionPattern.matcher(tweetText.toLowerCase());
         while (matcher.find())
             mentions.add(matcher.group(1));
 
