@@ -10,10 +10,16 @@ import java.util.List;
  */
 public class Book {
 
-    // TODO: rep
+    private String title;
+    private List<String> authors;
+    private int year;
     
-    // TODO: rep invariant
-    // TODO: abstraction function
+    // Rep invariant:
+    //  title.trim.length > 0
+    //  authors.size > 0, for author in authors, author.trim.length > 0
+    //  year > 0 
+    // Abstraction function:
+    //  represents an edition of a book with `title`, written by `authors` and published in `year`
     // TODO: safety from rep exposure argument
     
     /**
@@ -28,8 +34,28 @@ public class Book {
     }
     
     // assert the rep invariant
-    private void checkRep() {
-        throw new RuntimeException("not implemented yet");
+    private void checkRep() throws Exception{
+        checkTitle();
+        checkAuthors();
+        checkYear();
+    }
+    
+    private void checkTitle() throws Exception {
+        if(title.trim().length() == 0)
+            throw new Exception("Title must atleast have a single character");
+    }
+    
+    private void checkAuthors() throws Exception {
+        if(authors.size() == 0)
+            throw new Exception("Book must atleast have a single author");
+        for(String author: authors) {
+            if (author.trim().length() == 0)
+                throw new Exception("Author name must atleast have a single character");
+        }
+    }
+    
+    private void checkYear() throws Exception {
+        if(year < 0) throw new Exception("Year must be non-negative");
     }
     
     /**
