@@ -13,7 +13,8 @@ public class BookCopy {
     //   book cannot be null
     // Abstraction function:
     //   represents a copy of a book
-    // TODO: safety from rep exposure argument
+    // Safety from rep exposure argument:
+    // All the fields are private and book is an immutable type
     
     public static enum Condition {
         GOOD, DAMAGED
@@ -69,18 +70,6 @@ public class BookCopy {
         
         return builder.toString();
     }
-
-    // uncomment the following methods if you need to implement equals and hashCode,
-    // or delete them if you don't
-    // @Override
-    // public boolean equals(Object that) {
-    //     throw new RuntimeException("not implemented yet");
-    // }
-    // 
-    // @Override
-    // public int hashCode() {
-    //     throw new RuntimeException("not implemented yet");
-    // }
 
 
     /* Copyright (c) 2016 MIT 6.005 course staff, all rights reserved.
