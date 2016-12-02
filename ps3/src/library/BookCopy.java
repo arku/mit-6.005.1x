@@ -23,8 +23,11 @@ public class BookCopy {
      * Make a new BookCopy, initially in good condition.
      * @param book the Book of which this is a copy
      */
-    public BookCopy(Book book) {
-        throw new RuntimeException("not implemented yet");
+    public BookCopy(Book book) throws Exception{
+        this.book = book;
+        this.condition = Condition.GOOD;
+        
+        checkRep();
     }
     
     // assert the rep invariant
@@ -36,14 +39,14 @@ public class BookCopy {
      * @return the Book of which this is a copy
      */
     public Book getBook() {
-        throw new RuntimeException("not implemented yet");
+        return book;
     }
     
     /**
      * @return the condition of this book copy
      */
     public Condition getCondition() {
-        throw new RuntimeException("not implemented yet");
+        return condition;
     }
 
     /**
@@ -51,7 +54,7 @@ public class BookCopy {
      * @param condition the latest condition of the book copy
      */
     public void setCondition(Condition condition) {
-        throw new RuntimeException("not implemented yet");
+        this.condition = condition;
     }
     
     /**
@@ -59,7 +62,12 @@ public class BookCopy {
      *    and the words "good" or "damaged" depending on its condition
      */
     public String toString() {
-        throw new RuntimeException("not implemented yet");
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append(book.toString());
+        builder.append(" Status - " + condition.toString().toLowerCase());
+        
+        return builder.toString();
     }
 
     // uncomment the following methods if you need to implement equals and hashCode,
