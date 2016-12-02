@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class Book {
 
-    private String title;
-    private List<String> authors;
-    private int year;
+    private final String title;
+    private final List<String> authors;
+    private final int year;
     
     // Rep invariant:
     //  title.trim.length > 0
