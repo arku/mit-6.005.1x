@@ -21,7 +21,9 @@ public class Book {
     //  year > 0 
     // Abstraction function:
     //  represents an edition of a book with `title`, written by `authors` and published in `year`
-    // TODO: safety from rep exposure argument
+    // Safety from rep exposure argument:
+    //  All fields are private. authors is mutable, so defensive copies are made for authors list
+    //  while creating  and returning the list
     
     /**
      * Make a Book.
