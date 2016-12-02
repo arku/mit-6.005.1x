@@ -1,5 +1,6 @@
 package library;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +30,11 @@ public class Book {
      * at least one non-space character.
      * @param year Year when this edition was published in the conventional (Common Era) calendar.  Must be nonnegative. 
      */
-    public Book(String title, List<String> authors, int year) {
-        throw new RuntimeException("not implemented yet");
+    public Book(String title, List<String> authors, int year) throws Exception{
+        this.title = title;
+        this.authors = new ArrayList<>(authors);
+        this.year = year;
+        checkRep();
     }
     
     // assert the rep invariant
@@ -62,21 +66,21 @@ public class Book {
      * @return the title of this book
      */
     public String getTitle() {
-        throw new RuntimeException("not implemented yet");
+        return title;
     }
     
     /**
      * @return the authors of this book
      */
     public List<String> getAuthors() {
-        throw new RuntimeException("not implemented yet");
+        return new ArrayList<>(authors);
     }
 
     /**
      * @return the year that this book was published
      */
     public int getYear() {
-        throw new RuntimeException("not implemented yet");
+        return year;
     }
 
     /**
@@ -84,7 +88,14 @@ public class Book {
      *    authors, and publication year
      */
     public String toString() {
-        throw new RuntimeException("not implemented yet");
+        StringBuilder builder = new StringBuilder();
+        builder.append(title + " Written by ");
+        
+        for(String author: authors)
+            builder.append(author + " ");
+        
+        builder.append("Published in " + year);
+        return builder.toString();
     }
 
     // uncomment the following methods if you need to implement equals and hashCode,

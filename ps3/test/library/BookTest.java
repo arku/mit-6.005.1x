@@ -68,7 +68,7 @@ public class BookTest {
     }
     
     @Test
-    public void testGetTitle() {
+    public void testGetTitle() throws Exception {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("Anonymous");
@@ -79,7 +79,7 @@ public class BookTest {
     }
     
     @Test
-    public void testGetAuthorsSingleAuthor() {
+    public void testGetAuthorsSingleAuthor() throws Exception {
         String bookTitle = "My life";
         String author = "Anonymous";
         List<String> authors = new ArrayList<>();
@@ -93,7 +93,7 @@ public class BookTest {
     }
     
     @Test
-    public void testGetAuthorsMoreThanOneAuthor() {
+    public void testGetAuthorsMoreThanOneAuthor() throws Exception {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("joseph");
@@ -108,7 +108,7 @@ public class BookTest {
     }
 
     @Test
-    public void testGetYear() {
+    public void testGetYear() throws Exception {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("Anonymous");
@@ -119,7 +119,7 @@ public class BookTest {
     }
     
     @Test
-    public void testToString() {
+    public void testToString() throws Exception {
         String bookTitle = "Nothing fancy";
         List<String> authors = Arrays.asList("Jon", "Kevin", "Cody");
         int publishedYear = 2009;
