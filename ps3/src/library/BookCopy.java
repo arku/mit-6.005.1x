@@ -6,10 +6,13 @@ package library;
  */
 public class BookCopy {
 
-    // TODO: rep
+    private final Book book;
+    private Condition condition;
     
-    // TODO: rep invariant
-    // TODO: abstraction function
+    // Rep invariant
+    //   book cannot be null
+    // Abstraction function:
+    //   represents a copy of a book
     // TODO: safety from rep exposure argument
     
     public static enum Condition {
@@ -25,8 +28,8 @@ public class BookCopy {
     }
     
     // assert the rep invariant
-    private void checkRep() {
-        throw new RuntimeException("not implemented yet");
+    private void checkRep() throws Exception {
+        if (book == null) throw new Exception("Book cannot be null");
     }
     
     /**
