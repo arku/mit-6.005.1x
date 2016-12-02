@@ -100,17 +100,24 @@ public class Book {
         return builder.toString();
     }
 
-    // uncomment the following methods if you need to implement equals and hashCode,
-    // or delete them if you don't
-    // @Override
-    // public boolean equals(Object that) {
-    //     throw new RuntimeException("not implemented yet");
-    // }
-    // 
-    // @Override
-    // public int hashCode() {
-    //     throw new RuntimeException("not implemented yet");
-    // }
+    
+    @Override
+    public boolean equals(Object that) {
+        if (!(that instanceof Book)) return false;
+        Book thatBook = (Book) that;
+        return this.getTitle() == thatBook.getTitle() &&
+               this.getAuthors().equals(thatBook.getAuthors()) &&
+               this.getYear() == thatBook.getYear();
+    }
+    
+    @Override
+    public int hashCode() {
+         int hashCode = this.getTitle().hashCode();
+         for(String author: this.getAuthors())
+             hashCode += author.hashCode();
+         hashCode += getYear();
+         return hashCode;
+    }
 
 
 
