@@ -32,7 +32,7 @@ public class Book {
      * at least one non-space character.
      * @param year Year when this edition was published in the conventional (Common Era) calendar.  Must be nonnegative. 
      */
-    public Book(String title, List<String> authors, int year) throws Exception{
+    public Book(String title, List<String> authors, int year) {
         this.title = title;
         this.authors = new ArrayList<>(authors);
         this.year = year;
@@ -40,28 +40,25 @@ public class Book {
     }
     
     // assert the rep invariant
-    private void checkRep() throws Exception{
+    private void checkRep() {
         checkTitle();
         checkAuthors();
         checkYear();
     }
     
-    private void checkTitle() throws Exception {
-        if(title.trim().length() == 0)
-            throw new Exception("Title must atleast have a single character");
+    private void checkTitle() {
+        assert title.trim().length() != 0;
     }
     
-    private void checkAuthors() throws Exception {
-        if(authors.size() == 0)
-            throw new Exception("Book must atleast have a single author");
-        for(String author: authors) {
-            if (author.trim().length() == 0)
-                throw new Exception("Author name must atleast have a single character");
-        }
+    private void checkAuthors() {
+        assert authors.size() != 0;
+        
+        for(String author: authors)
+            assert author.trim().length() != 0;
     }
     
-    private void checkYear() throws Exception {
-        if(year < 0) throw new Exception("Year must be non-negative");
+    private void checkYear() {
+        assert year >= 0;
     }
     
     /**

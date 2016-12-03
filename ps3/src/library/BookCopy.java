@@ -24,16 +24,26 @@ public class BookCopy {
      * Make a new BookCopy, initially in good condition.
      * @param book the Book of which this is a copy
      */
-    public BookCopy(Book book) throws Exception{
+    public BookCopy(Book book) {
         this.book = book;
         this.condition = Condition.GOOD;
         
         checkRep();
     }
     
+    /**
+     * Make a new BookCopy from a BookCopy
+     */
+    public BookCopy(BookCopy copy) {
+        this.book = copy.getBook();
+        this.condition = Condition.GOOD;
+        
+        checkRep();
+    }
+    
     // assert the rep invariant
-    private void checkRep() throws Exception {
-        if (book == null) throw new Exception("Book cannot be null");
+    private void checkRep() {
+        assert book != null;
     }
     
     /**

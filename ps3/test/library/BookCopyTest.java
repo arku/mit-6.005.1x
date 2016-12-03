@@ -28,34 +28,34 @@ public class BookCopyTest {
      */
     
     @Test
-    public void testBookCopyConstructor() throws Exception {
+    public void testBookCopyConstructor() {
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
         assertEquals(book, copy.getBook());
     }
     
-    @Test(expected=Exception.class)
-    public void testBookCopyConstructorException() throws Exception {
-        BookCopy copy = new BookCopy(null);
+    @Test(expected=AssertionError.class)
+    public void testBookCopyConstructorNull() {
+        Book book = null;
+        BookCopy copy = new BookCopy(book);
     }
     
-    
     @Test
-    public void testGetBook() throws Exception {
+    public void testGetBook() {
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
         assertEquals(book, copy.getBook());
     }
     
     @Test
-    public void testGetGoodCondition() throws Exception {
+    public void testGetGoodCondition() {
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
         assertEquals(BookCopy.Condition.GOOD, copy.getCondition());
     }
     
     @Test
-    public void testGetDamagedCondition() throws Exception {
+    public void testGetDamagedCondition() {
         BookCopy.Condition damaged = BookCopy.Condition.DAMAGED;
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
@@ -65,14 +65,14 @@ public class BookCopyTest {
     }
     
     @Test
-    public void testToStringGoodCondition() throws Exception {
+    public void testToStringGoodCondition() {
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
         assertTrue(copy.toString().indexOf("good") >= 0);
     }
     
     @Test
-    public void testToStringDamagedCondition() throws Exception {
+    public void testToStringDamagedCondition() {
         BookCopy.Condition damaged = BookCopy.Condition.DAMAGED;
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         BookCopy copy = new BookCopy(book);
@@ -81,7 +81,7 @@ public class BookCopyTest {
     }
     
     @Test
-    public void testEquals() throws Exception {
+    public void testEquals() {
         Book book = new Book("Not good", Arrays.asList("Jon", "Joe"), 1990);
         Book anotherBook = book;
         Book yetAnotherBook = anotherBook;

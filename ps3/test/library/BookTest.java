@@ -33,7 +33,7 @@ public class BookTest {
      */
     
     @Test
-    public void testBookConstructor() throws Exception {
+    public void testBookConstructor() {
         String bookTitle = "My life";
         List<String> authors = Arrays.asList("Anonymous");
         int year = 1900;
@@ -44,14 +44,14 @@ public class BookTest {
         assertEquals(year, book.getYear());
     }
     
-    @Test(expected=Exception.class)
-    public void testBookConstructorInvalidTitle() throws Exception {
+    @Test(expected=AssertionError.class)
+    public void testBookConstructorInvalidTitle() {
         List<String> authors = Arrays.asList("Anonymous");
         Book book = new Book("  ", authors, 1900);
     }
     
-    @Test(expected=Exception.class)
-    public void testBookConstructorInvalidAuthorsList() throws Exception {
+    @Test(expected=AssertionError.class)
+    public void testBookConstructorInvalidAuthorsList() {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
 
@@ -60,15 +60,15 @@ public class BookTest {
         
     }
     
-    @Test(expected=Exception.class)
-    public void testBookConstructorNegativeYear() throws Exception {
+    @Test(expected=AssertionError.class)
+    public void testBookConstructorNegativeYear() {
         String bookTitle = "My life";
         List<String> authors = Arrays.asList("Anonymous");
         Book book = new Book(bookTitle, authors, -1900);
     }
     
     @Test
-    public void testGetTitle() throws Exception {
+    public void testGetTitle() {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("Anonymous");
@@ -79,7 +79,7 @@ public class BookTest {
     }
     
     @Test
-    public void testGetAuthorsSingleAuthor() throws Exception {
+    public void testGetAuthorsSingleAuthor() {
         String bookTitle = "My life";
         String author = "Anonymous";
         List<String> authors = new ArrayList<>();
@@ -93,7 +93,7 @@ public class BookTest {
     }
     
     @Test
-    public void testGetAuthorsMoreThanOneAuthor() throws Exception {
+    public void testGetAuthorsMoreThanOneAuthor() {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("joseph");
@@ -108,7 +108,7 @@ public class BookTest {
     }
 
     @Test
-    public void testGetYear() throws Exception {
+    public void testGetYear() {
         String bookTitle = "My life";
         List<String> authors = new ArrayList<>();
         authors.add("Anonymous");
@@ -119,7 +119,7 @@ public class BookTest {
     }
     
     @Test
-    public void testToString() throws Exception {
+    public void testToString() {
         String bookTitle = "Nothing fancy";
         List<String> authors = Arrays.asList("Jon", "Kevin", "Cody");
         int publishedYear = 2009;
@@ -133,7 +133,7 @@ public class BookTest {
     }
     
     @Test
-    public void testEqualsSameBook() throws Exception{
+    public void testEqualsSameBook() {
         String bookTitle = "Nothing fancy";
         List<String> authors = Arrays.asList("Jon", "Kevin", "Cody");
         int publishedYear = 2009;
@@ -143,7 +143,7 @@ public class BookTest {
     }
     
     @Test
-    public void testEqualsSymmetryAndTransitivity() throws Exception{
+    public void testEqualsSymmetryAndTransitivity() {
         String bookTitle = "Nothing fancy";
         List<String> authors = Arrays.asList("Jon", "Kevin", "Cody");
         int publishedYear = 2009;
@@ -163,7 +163,7 @@ public class BookTest {
     }
     
     @Test
-    public void testEqualsDifferentBooks() throws Exception{
+    public void testEqualsDifferentBooks() {
         String bookTitle = "Nothing fancy";
         List<String> authors = Arrays.asList("Jon", "Kevin", "Cody");
         int publishedYear = 2009;
