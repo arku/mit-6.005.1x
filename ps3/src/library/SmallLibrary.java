@@ -1,5 +1,6 @@
 package library;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -7,12 +8,6 @@ import java.util.Set;
  * SmallLibrary represents a small collection of books, like a single person's home collection.
  */
 public class SmallLibrary implements Library {
-
-    // This rep is required! 
-    // Do not change the types of inLibrary or checkedOut, 
-    // and don't add or remove any other fields.
-    // (BigLibrary is where you can create your own rep for
-    // a Library implementation.)
 
     // rep
     private Set<BookCopy> inLibrary;
@@ -34,7 +29,7 @@ public class SmallLibrary implements Library {
     
     // assert the rep invariant
     private void checkRep() {
-        throw new RuntimeException("not implemented yet");
+        assert Collections.disjoint(inLibrary, checkedOut) == true;
     }
 
     @Override
