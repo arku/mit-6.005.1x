@@ -9,7 +9,7 @@ import java.util.List;
  * identified by its title, author list, and publication year.  Alphabetic case and author 
  * order are significant, so a book written by "Fred" is different than a book written by "FRED".
  */
-public class Book {
+public class Book implements Comparable<Book> {
 
     private final String title;
     private final List<String> authors;
@@ -29,7 +29,7 @@ public class Book {
      * Make a Book.
      * @param title Title of the book. Must contain at least one non-space character.
      * @param authors Names of the authors of the book.  Must have at least one name, and each name must contain 
-     * at least one non-space character.
+     * at least one non-space character.-
      * @param year Year when this edition was published in the conventional (Common Era) calendar.  Must be nonnegative. 
      */
     public Book(String title, List<String> authors, int year) {
@@ -115,6 +115,22 @@ public class Book {
          hashCode += getYear();
          return hashCode;
     }
+    
+    @Override
+    public int compareTo(Book that) {
+        if (this.getTitle().equals(that.getTitle()) &&
+            this.getAuthors().equals(that.getAuthors())) {
+            if (this.getYear() < that.getYear())
+                return 1;
+            else if (this.getYear() > that.getYear())
+                return -1;
+            else return 0;
+        }
+        
+        else
+            return this.getTitle().compareTo(that.getTitle());
+            
+    }
 
 
 
@@ -124,3 +140,4 @@ public class Book {
      */
 
 }
+
