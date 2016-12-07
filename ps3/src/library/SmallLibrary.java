@@ -1,11 +1,12 @@
 package library;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.hamcrest.core.Is;
 
 /** 
  * SmallLibrary represents a small collection of books, like a single person's home collection.
@@ -13,8 +14,8 @@ import java.util.Set;
 public class SmallLibrary implements Library {
 
     // rep
-    private Set<BookCopy> inLibrary;
-    private Set<BookCopy> checkedOut;
+    private final Set<BookCopy> inLibrary;
+    private final Set<BookCopy> checkedOut;
     
     // rep invariant:
     //    the intersection of inLibrary and checkedOut is the empty set
@@ -24,7 +25,9 @@ public class SmallLibrary implements Library {
     //      where if a book copy is in inLibrary then it is available,
     //      and if a copy is in checkedOut then it is checked out
 
-    // TODO: safety from rep exposure argument
+    // safety from rep exposure argument:
+    // Both the fields are final. And no method in the class returns a copy of the rep, so rep
+    // is not exposed
     
     public SmallLibrary() {
         inLibrary = new HashSet<>();
@@ -50,12 +53,16 @@ public class SmallLibrary implements Library {
     public void checkout(BookCopy copy) {
         inLibrary.remove(copy);
         checkedOut.add(copy);
+        
+        checkRep();
     }
     
     @Override
     public void checkin(BookCopy copy) {
         checkedOut.remove(copy);
         inLibrary.add(copy);
+        
+        checkRep();
     }
     
     @Override
@@ -66,51 +73,39 @@ public class SmallLibrary implements Library {
     @Override
     public Set<BookCopy> allCopies(Book book) {
         Set<BookCopy> copies = new HashSet<>();
-        addBookCopiesInLibrary(book, copies);
-        addBookCopiesInCheckedOut(book, copies);
+        addBookCopies(inLibrary, book, copies);
+        addBookCopies(checkedOut, book, copies);
         return copies;
     }
     
     /**
-     * Mutates copies by adding book copies present in the library
+     * Mutates copies by adding book copies present in a bookSet
      * which are copies of book
+     * @param bookSet the set which contains the book copies
      * @param book the book for which the copies are to be added
      * @param copies the set of book copies to be mutated
      */
-    private void addBookCopiesInLibrary(Book book, Set<BookCopy> copies) {
-        for (BookCopy copy: inLibrary) {
+    private void addBookCopies(Set<BookCopy> bookSet, Book book, Set<BookCopy> copies) {
+        for (BookCopy copy: bookSet) {
             if (copy.getBook().equals(book))
                 copies.add(copy);
         }
     }
-    
-    /**
-     * Mutates copies by adding book copies checked out from library
-     * which are copies of book
-     * @param book the book for which the copies are to be added
-     * @param copies the set of book copies to be mutated
-     */
-    private void addBookCopiesInCheckedOut(Book book, Set<BookCopy> copies) {
-        for (BookCopy copy: checkedOut) {
-            if (copy.getBook().equals(book))
-                copies.add(copy);
-        }
-    }
-    
     
     
     @Override
     public Set<BookCopy> availableCopies(Book book) {
         Set<BookCopy> copies = new HashSet<>();
-        addBookCopiesInLibrary(book, copies);
+        addBookCopies(inLibrary, book, copies);
         return copies;
     }
 
     @Override
     public List<Book> find(String query) {
         List<Book> matchingBooks = new ArrayList<>();
-        findMatchingBooksInLibrary(matchingBooks, query);
-        findMatchingBooksInCheckedOut(matchingBooks, query);
+        
+        findMatchingBooks(inLibrary, matchingBooks, query);
+        findMatchingBooks(checkedOut, matchingBooks, query);
         
         Collections.sort(matchingBooks);
         
@@ -119,12 +114,13 @@ public class SmallLibrary implements Library {
     
     /**
      * Mutates matchingBooks with matches founded in the books present in
-     * the library
+     * the set of bookCopies
+     * @param bookSet the set of book copies
      * @param matchingBooks the list of matching books
      * @param query the search term
      */
-    private void findMatchingBooksInLibrary(List<Book> matchingBooks, String query) {
-        for(BookCopy copy: inLibrary) {
+    private void findMatchingBooks(Set<BookCopy> bookSet, List<Book> matchingBooks, String query) {
+        for(BookCopy copy: bookSet) {
             Book book = copy.getBook();
             // A book should appear at most once in a list
             if(!matchingBooks.contains(book) &&
@@ -132,24 +128,10 @@ public class SmallLibrary implements Library {
                 isAuthorMatching(book, query)) )
                 matchingBooks.add(book);
         }
+        
+        checkRep();
     }
     
-    /**
-     * Mutates matchingBooks with matches founded in the books present in
-     * the library
-     * @param matchingBooks the list of matching books
-     * @param query the search term
-     */
-    private void findMatchingBooksInCheckedOut(List<Book> matchingBooks, String query) {
-        for(BookCopy copy: checkedOut) {
-            Book book = copy.getBook();
-         // A book should appear at most once in a list
-            if(!matchingBooks.contains(book) &&
-               (isTitleMatching(book, query) ||
-                isAuthorMatching(book, query)) )
-                matchingBooks.add(book);
-        }
-    }
     
     /**
      * Returns whether the book's title is the same as the query(case-sensitive)
@@ -182,6 +164,7 @@ public class SmallLibrary implements Library {
             inLibrary.remove(copy);
         else 
             checkedOut.contains(copy);
+        checkRep();
     }
     
 
