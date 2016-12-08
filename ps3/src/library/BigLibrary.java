@@ -1,6 +1,8 @@
 package library;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,10 +14,20 @@ import java.util.Set;
  */
 public class BigLibrary implements Library {
 
-    // TODO: rep
+    // rep
+    private final Set<BookCopy> inLibrary;
+    private final Set<BookCopy> checkedOut;
+    private final Map<Book, Set<BookCopy>> bookCopies;
+    private final Map<String, List<Book>> titleBooksMap;
+    private final Map<String, List<Book>> authorBooksMap;
     
-    // TODO: rep invariant
-    // TODO: abstraction function
+    // Rep invariant
+    // the intersection of inLibrary and checkedOut is the empty set
+
+    // Abstraction function
+    // represents the collection of books in the library. If a copy is in
+    // inLibrary, it is available. And, if it is in checkedOut, it is not available
+
     // TODO: safety from rep exposure argument
     
     public BigLibrary() {
@@ -24,7 +36,7 @@ public class BigLibrary implements Library {
     
     // assert the rep invariant
     private void checkRep() {
-        throw new RuntimeException("not implemented yet");
+        assert Collections.disjoint(inLibrary, checkedOut) == true;
     }
 
     @Override
